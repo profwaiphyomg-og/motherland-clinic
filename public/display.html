@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motherland Clinic - Waiting Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #c9a962;
+      --accent: #e8d5b7;
+      --bg: #0f0f1a;
+      --surface: #252538;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --text: #f5f5f5;
+      --text-muted: #a0a0b0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image:
+        radial-gradient(ellipse at 30% 20%, rgba(201, 169, 98, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(201, 169, 98, 0.08) 0%, transparent 50%);
+    }
+
+    .header {
+      text-align: center;
+      padding: 40px 20px 20px;
+    }
+
+    .logo {
+      margin-bottom: 8px;
+    }
+
+    .logo h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .logo p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 40px;
+    }
+
+    .now-serving-section {
+      text-align: center;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .now-serving-label {
+      font-size: 1rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+    }
+
+    .now-serving-ticket {
+      font-family: 'Space Mono', monospace;
+      font-size: 12rem;
+      font-weight: 700;
+      color: var(--secondary);
+      line-height: 1;
+      text-shadow: 0 0 60px rgba(201, 169, 98, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+
+    .now-serving-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 16px;
+    }
+
+    .now-serving-empty {
+      font-family: 'Space Mono', monospace;
+      font-size: 4rem;
+      color: var(--text-muted);
+      opacity: 0.3;
+    }
+
+    .up-next-section {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 30px 50px;
+      border: 1px solid rgba(201, 169, 98, 0.2);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .up-next-label {
+      font-size: 0.85rem;
+      color: var(--warning);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .up-next-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .up-next-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: rgba(251, 191, 36, 0.08);
+      border-radius: 10px;
+      border: 1px solid rgba(251, 191, 36, 0.15);
+    }
+
+    .up-next-item .position {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      min-width: 60px;
+    }
+
+    .up-next-item .name {
+      flex: 1;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .up-next-item .ticket {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      color: var(--warning);
+    }
+
+    .empty-up-next {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 20px;
+      font-style: italic;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .footer .time {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--secondary);
+    }
+
+    @media (max-width: 768px) {
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+
+      .now-serving-ticket {
+        font-size: 6rem;
+      }
+
+      .now-serving-name {
+        font-size: 1.8rem;
+      }
+
+      .up-next-section {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <h1>Motherland</h1>
+      <p>Fertility Clinic</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="now-serving-section">
+      <div class="now-serving-label">Now Serving</div>
+      <div class="now-serving-ticket" id="nowServingTicket">--</div>
+      <div class="now-serving-name" id="nowServingName">Please Wait</div>
+    </section>
+
+    <section class="up-next-section">
+      <div class="up-next-label">Coming Up Next</div>
+      <div class="up-next-list" id="upNextList">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="time" id="currentTime">--:--</div>
+    <div style="margin-top: 8px;">Clinic Hours: 11:00 AM - Until All Patients Seen</div>
+  </footer>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      document.getElementById('currentTime').textContent = timeStr;
+    }
+
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        // Update now serving
+        if (data.nowServing) {
+          document.getElementById('nowServingTicket').textContent = data.nowServing.ticketNumber;
+          document.getElementById('nowServingName').textContent = data.nowServing.name;
+        } else {
+          document.getElementById('nowServingTicket').innerHTML = '<span class="now-serving-empty">--</span>';
+          document.getElementById('nowServingName').textContent = 'Please Wait';
+        }
+
+        // Update up next
+        const upNextList = document.getElementById('upNextList');
+
+        if (data.estimates && data.estimates.length > 0) {
+          upNextList.innerHTML = data.estimates.slice(0, 5).map((p, i) => `
+            <div class="up-next-item">
+              <span class="position">#${i + 2}</span>
+              <span class="name">${p.name}</span>
+              <span class="ticket">${p.ticketNumber}</span>
+            </div>
+          `).join('');
+        } else {
+          upNextList.innerHTML = '<div class="empty-up-next">No one in queue</div>';
+        }
+      } catch (e) {
+        console.error('Failed to fetch status:', e);
+      }
+    }
+
+    // Initialize
+    updateTime();
+    fetchStatus();
+
+    // Auto-refresh every 10 seconds
+    setInterval(() => {
+      fetchStatus();
+      updateTime();
+    }, 10000);
+
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>

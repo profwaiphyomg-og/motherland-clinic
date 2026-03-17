@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motherland Clinic - Join Queue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #c9a962;
+      --accent: #e8d5b7;
+      --bg: #0f0f1a;
+      --surface: #252538;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --text: #f5f5f5;
+      --text-muted: #a0a0b0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(201, 169, 98, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(201, 169, 98, 0.05) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--secondary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .logo p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .queue-status {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(201, 169, 98, 0.2);
+    }
+
+    .now-serving {
+      text-align: center;
+    }
+
+    .now-serving-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+    }
+
+    .now-serving-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--secondary);
+      line-height: 1;
+    }
+
+    .now-serving-empty {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.5rem;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .form-card {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid rgba(201, 169, 98, 0.15);
+    }
+
+    .form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg);
+      border: 1px solid rgba(201, 169, 98, 0.2);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.1);
+    }
+
+    .telegram-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #0088cc 0%, #00aaff 100%);
+      border-radius: 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .telegram-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0, 136, 204, 0.4);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, var(--secondary) 0%, #b8944f 100%);
+      border: none;
+      border-radius: 12px;
+      color: var(--primary);
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 169, 98, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result-card {
+      display: none;
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid rgba(201, 169, 98, 0.3);
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-card.show {
+      display: block;
+    }
+
+    .ticket-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+    }
+
+    .ticket-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 5rem;
+      font-weight: 700;
+      color: var(--secondary);
+      line-height: 1.2;
+    }
+
+    .result-details {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(201, 169, 98, 0.15);
+    }
+
+    .result-detail {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .result-detail:last-child {
+      border-bottom: none;
+    }
+
+    .result-detail-label {
+      color: var(--text-muted);
+    }
+
+    .result-detail-value {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .waiting-note {
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(201, 169, 98, 0.1);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .btn-cancel {
+      width: 100%;
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: transparent;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 10px;
+      color: #ef4444;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .footer a {
+      color: var(--secondary);
+      text-decoration: none;
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      color: #ef4444;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 24px 16px;
+      }
+
+      .logo h1 {
+        font-size: 1.8rem;
+      }
+
+      .ticket-number {
+        font-size: 3.5rem;
+      }
+
+      .now-serving-number {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <h1>Motherland</h1>
+      <p>Fertility Clinic</p>
+    </div>
+
+    <div class="queue-status">
+      <div class="now-serving">
+        <div class="now-serving-label">Now Serving</div>
+        <div class="now-serving-number" id="nowServing">--</div>
+      </div>
+    </div>
+
+    <div class="form-card" id="joinForm">
+      <h2 class="form-title">Join Today's Queue</h2>
+      <div id="errorContainer"></div>
+
+      <form id="patientForm">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="phone" name="phone" placeholder="+95 9XXXXXXXXX" required>
+        </div>
+
+        <div class="form-group">
+          <label>Telegram (Optional - for notifications)</label>
+          <a href="https://t.me/Motherlandqueue_bot" target="_blank" class="telegram-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            Open Telegram Bot for Updates
+          </a>
+          <input type="text" id="telegram" name="telegram" placeholder="@username (after starting bot)" style="margin-top: 10px;">
+        </div>
+
+        <button type="submit" class="btn">Join Queue</button>
+      </form>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <div class="ticket-label">Your Ticket</div>
+      <div class="ticket-number" id="ticketNumber">A-000</div>
+
+      <div class="result-details">
+        <div class="result-detail">
+          <span class="result-detail-label">Position</span>
+          <span class="result-detail-value" id="position">#--</span>
+        </div>
+        <div class="result-detail">
+          <span class="result-detail-label">Estimated Wait</span>
+          <span class="result-detail-value" id="estimatedWait">-- mins</span>
+        </div>
+      </div>
+
+      <div class="waiting-note">
+        📍 Please arrive 10 minutes before your estimated time.<br>
+        We will notify you when the doctor is ready.
+      </div>
+
+      <button class="btn-cancel" id="cancelBtn" onclick="cancelBooking()">
+        Cancel Booking
+      </button>
+    </div>
+
+    <div class="footer">
+      <a href="/admin">Clinic Staff Login</a> · Open 11:00 AM
+    </div>
+  </div>
+
+  <script>
+    let patientId = null;
+
+    // Fetch queue status
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        if (data.nowServing) {
+          document.getElementById('nowServing').textContent = data.nowServing.ticketNumber;
+        } else {
+          document.getElementById('nowServing').innerHTML = '<span class="now-serving-empty">--</span>';
+        }
+
+        // Auto-refresh
+        setTimeout(fetchStatus, 10000);
+      } catch (e) {
+        console.error('Failed to fetch status:', e);
+        setTimeout(fetchStatus, 5000);
+      }
+    }
+
+    // Check for existing patient session
+    async function checkSession() {
+      const saved = localStorage.getItem('motherland_patient');
+      if (saved) {
+        const patient = JSON.parse(saved);
+        
+        // Verify patient still exists in queue
+        try {
+          const res = await fetch(`/api/patient/${patient.id}`);
+          if (res.status === 404) {
+            // Patient was removed
+            localStorage.removeItem('motherland_patient');
+            return;
+          }
+          const currentPatient = await res.json();
+          
+          // If completed, clear session
+          if (currentPatient.status === 'completed') {
+            localStorage.removeItem('motherland_patient');
+            return;
+          }
+          
+          patientId = patient.id;
+          showResult(currentPatient); // Use fresh data from server
+        } catch (e) {
+          localStorage.removeItem('motherland_patient');
+        }
+      }
+    }
+
+    // Show result card
+    function showResult(patient) {
+      document.getElementById('joinForm').style.display = 'none';
+      document.getElementById('resultCard').classList.add('show');
+
+      document.getElementById('ticketNumber').textContent = patient.ticketNumber;
+      document.getElementById('position').textContent = patient.position ? `#${patient.position}` : '---';
+      document.getElementById('estimatedWait').textContent = patient.estimatedMinutes ? `${patient.estimatedMinutes} mins` : '---';
+
+      // Start polling for updates
+      pollPatientStatus(patient.id);
+    }
+
+    // Poll patient status
+    async function pollPatientStatus(id) {
+      try {
+        const res = await fetch(`/api/patient/${id}`);
+        
+        // Patient not found (deleted from queue)
+        if (res.status === 404) {
+          localStorage.removeItem('motherland_patient');
+          document.getElementById('resultCard').classList.remove('show');
+          document.getElementById('joinForm').style.display = 'block';
+          document.getElementById('patientForm').reset();
+          alert('Your booking has been removed from the queue.');
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.status === 'in-consultation') {
+          document.getElementById('position').textContent = 'Called!';
+          document.getElementById('estimatedWait').textContent = '👁️ Please proceed now';
+          document.querySelector('.waiting-note').innerHTML = '🎉 <strong>Your turn!</strong><br>Please proceed to the consultation room.';
+        } else if (data.status === 'completed') {
+          document.getElementById('position').textContent = 'Done';
+          document.getElementById('estimatedWait').textContent = '✓';
+          document.querySelector('.waiting-note').innerHTML = '✅ Thank you for visiting Motherland Clinic.<br>Have a great day!';
+        } else if (data.status === 'waiting') {
+          document.getElementById('position').textContent = data.position ? `#${data.position}` : '---';
+          document.getElementById('estimatedWait').textContent = data.estimatedMinutes ? `${data.estimatedMinutes} mins` : '---';
+        }
+      } catch (e) {
+        console.error('Failed to fetch patient status:', e);
+      }
+
+      setTimeout(() => pollPatientStatus(id), 15000);
+    }
+
+    // Form submission
+    document.getElementById('patientForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const btn = form.querySelector('button');
+      const errorContainer = document.getElementById('errorContainer');
+
+      const data = {
+        name: form.name.value.trim(),
+        phone: form.phone.value.trim(),
+        telegramUsername: form.telegram.value.trim().replace('@', '')
+      };
+
+      if (!data.name || !data.phone) {
+        errorContainer.innerHTML = '<div class="error">Please fill in all required fields</div>';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+      errorContainer.innerHTML = '';
+
+      try {
+        const res = await fetch('/api/join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          throw new Error(result.error || 'Failed to join queue');
+        }
+
+        // Save to localStorage
+        localStorage.setItem('motherland_patient', JSON.stringify(result.patient));
+        patientId = result.patient.id;
+
+        showResult(result.patient);
+      } catch (err) {
+        errorContainer.innerHTML = `<div class="error">${err.message}</div>`;
+        btn.disabled = false;
+        btn.textContent = 'Join Queue';
+      }
+    });
+
+    // Initialize
+    fetchStatus();
+    checkSession();
+
+    // Cancel booking
+    async function cancelBooking() {
+      if (!confirm('Are you sure you want to cancel your booking?')) return;
+
+      const btn = document.getElementById('cancelBtn');
+      btn.disabled = true;
+      btn.textContent = 'Cancelling...';
+
+      try {
+        const res = await fetch(`/api/patient/${patientId}`, { method: 'DELETE' });
+        const result = await res.json();
+
+        if (result.success) {
+          localStorage.removeItem('motherland_patient');
+          document.getElementById('resultCard').classList.remove('show');
+          document.getElementById('joinForm').style.display = 'block';
+          document.getElementById('patientForm').reset();
+          alert('Your booking has been cancelled.');
+        } else {
+          throw new Error(result.error || 'Failed to cancel');
+        }
+      } catch (err) {
+        alert(err.message);
+        btn.disabled = false;
+        btn.textContent = 'Cancel Booking';
+      }
+    }
+  </script>
+</body>
+</html>
